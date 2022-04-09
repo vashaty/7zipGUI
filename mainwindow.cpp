@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QCoreApplication>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -43,8 +42,8 @@ void MainWindow::on_pbStart_clicked()
         archives = dir.entryInfoList(QStringList() << "*.7z" << "*.zip",QDir::Files);
     }
 
-    if(!archives.isEmpty()){
-        QFileInfo file = archives.first();
+    if(process.state() == QProcess::NotRunning && !archives.isEmpty()){
+        QFileInfo file = archives.takeFirst();
         QStringList args;
         args << "x";
         args << "-y";
@@ -52,7 +51,7 @@ void MainWindow::on_pbStart_clicked()
         args << file.absoluteFilePath();
 
         process.start(sevenZip,args);
-        archives.removeFirst();
+//        archives.removeFirst();
     }
 
 //    foreach(QFileInfo file, archives) {
@@ -72,7 +71,7 @@ void MainWindow::on_pbStart_clicked()
 void MainWindow::statusChanged(QProcess::ProcessState state)
 {
     if(state == QProcess::NotRunning && !archives.isEmpty()){
-        QFileInfo file = archives.first();
+        QFileInfo file = archives.takeFirst();
         QStringList args;
         args << "x";
         args << "-y";
@@ -81,7 +80,7 @@ void MainWindow::statusChanged(QProcess::ProcessState state)
 
         process.start(sevenZip,args);
 
-        archives.removeFirst();
+//        archives.removeFirst();
     }
 }
 
