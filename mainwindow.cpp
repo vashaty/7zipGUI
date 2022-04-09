@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    connect(&process, &QProcess::readyReadStandardOutput, this, &MainWindow::readyToRead);
 }
 
 MainWindow::~MainWindow()
@@ -21,10 +23,9 @@ void MainWindow::on_pbDir_clicked()
                                                     QCoreApplication::applicationDirPath(),
                                                     QFileDialog::ShowDirsOnly
                                                     | QFileDialog::DontResolveSymlinks);
-    if(dir != ""){
+    if(dir != "")
         ui->leFolderPath->setText(dir);
 
-    }
 }
 
 
@@ -35,8 +36,21 @@ void MainWindow::on_pbStart_clicked()
     QFileInfoList archives = dir.entryInfoList(QStringList() << "*.7z" << "*.zip",QDir::Files);
 
     foreach(QFileInfo file, archives) {
-        ui->pteOutput->appendPlainText(file.absoluteFilePath());
-//        sevenZip.start();
+//        ui->pteOutput->appendPlainText(file.absoluteFilePath());
+        QStringList args;
+        args << "x";
+        args << "-y";
+        args << "-o" + file.absolutePath() + "/"+ file.baseName();
+        args << file.absoluteFilePath();
+
+        process.start(sevenZip,args);
+//        process.waitForFinished();
+
     }
+}
+
+void MainWindow::readyToRead()
+{
+    ui->pteOutput->appendPlainText(process.readAllStandardOutput());
 }
 

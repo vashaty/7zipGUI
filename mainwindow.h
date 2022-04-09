@@ -21,8 +21,11 @@ private slots:
 
     void on_pbStart_clicked();
 
+    void readyToRead();
+
 private:
     Ui::MainWindow *ui;
-    QProcess sevenZip;
+    QProcess process;
+    QString sevenZip = "7za.exe";
 };
 #endif // MAINWINDOW_H
