@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QProcess>
+#include <QFileDialog>
+#include <QDirIterator>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,9 +25,12 @@ private slots:
 
     void readyToRead();
 
+    void statusChanged(QProcess::ProcessState state);
+
 private:
     Ui::MainWindow *ui;
     QProcess process;
     QString sevenZip = "7za.exe";
+    QFileInfoList archives;
 };
 #endif // MAINWINDOW_H
