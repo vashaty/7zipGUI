@@ -27,3 +27,15 @@ void MainWindow::on_pbDir_clicked()
     }
 }
 
+
+void MainWindow::on_pbStart_clicked()
+{
+    QDir directory(ui->leFolderPath->text());
+
+    QStringList archives = directory.entryList(QStringList() << "*.7z" << "*.zip",QDir::Files);
+
+    foreach(QString filename, archives) {
+        ui->pteOutput->appendPlainText(filename);
+    }
+}
+

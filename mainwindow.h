@@ -18,6 +18,8 @@ public:
 private slots:
     void on_pbDir_clicked();
 
+    void on_pbStart_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
