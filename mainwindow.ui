@@ -63,6 +63,19 @@
      <string>Select directory</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="cbRecursive">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>120</y>
+      <width>72</width>
+      <height>19</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Recursive</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

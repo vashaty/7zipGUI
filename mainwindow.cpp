@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
+#include <QDirIterator>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -32,8 +33,17 @@ void MainWindow::on_pbDir_clicked()
 void MainWindow::on_pbStart_clicked()
 {
     QDir dir(ui->leFolderPath->text());
+    QFileInfoList archives;
 
-    QFileInfoList archives = dir.entryInfoList(QStringList() << "*.7z" << "*.zip",QDir::Files);
+    if(ui->cbRecursive->isChecked()){
+        QDirIterator it(ui->leFolderPath->text(), QStringList() << "*.7z" << "*.zip", QDir::Files, QDirIterator::Subdirectories);
+        while (it.hasNext()){
+            archives.append(QFileInfo(it.next()));
+        }
+    }else{
+        archives = dir.entryInfoList(QStringList() << "*.7z" << "*.zip",QDir::Files);
+    }
+
 
     foreach(QFileInfo file, archives) {
 //        ui->pteOutput->appendPlainText(file.absoluteFilePath());
@@ -44,7 +54,7 @@ void MainWindow::on_pbStart_clicked()
         args << file.absoluteFilePath();
 
         process.start(sevenZip,args);
-//        process.waitForFinished();
+        process.waitForFinished();
 
     }
 }
