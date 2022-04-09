@@ -30,12 +30,13 @@ void MainWindow::on_pbDir_clicked()
 
 void MainWindow::on_pbStart_clicked()
 {
-    QDir directory(ui->leFolderPath->text());
+    QDir dir(ui->leFolderPath->text());
 
-    QStringList archives = directory.entryList(QStringList() << "*.7z" << "*.zip",QDir::Files);
+    QFileInfoList archives = dir.entryInfoList(QStringList() << "*.7z" << "*.zip",QDir::Files);
 
-    foreach(QString filename, archives) {
-        ui->pteOutput->appendPlainText(filename);
+    foreach(QFileInfo file, archives) {
+        ui->pteOutput->appendPlainText(file.absoluteFilePath());
+//        sevenZip.start();
     }
 }
 
