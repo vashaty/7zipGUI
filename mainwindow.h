@@ -5,6 +5,7 @@
 #include <QProcess>
 #include <QFileDialog>
 #include <QDirIterator>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -18,6 +19,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+protected:
+    QTimer timer;
+
 private slots:
     void on_pbDir_clicked();
 
@@ -25,7 +29,9 @@ private slots:
 
     void readyToRead();
 
-    void statusChanged(QProcess::ProcessState state);
+    void onTimer();
+
+//    void statusChanged(QProcess::ProcessState state);
 
 private:
     Ui::MainWindow *ui;

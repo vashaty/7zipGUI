@@ -1,15 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     connect(&process, &QProcess::readyReadStandardOutput, this, &MainWindow::readyToRead);
-    connect(&process, &QProcess::stateChanged, this, &MainWindow::statusChanged);
+    QObject::connect(&timer, &QTimer::timeout,this, &MainWindow::onTimer);
+    timer.setSingleShot(false);
+//    connect(&process, &QProcess::stateChanged, this, &MainWindow::statusChanged);
 }
 
 MainWindow::~MainWindow()
@@ -51,11 +52,16 @@ void MainWindow::on_pbStart_clicked()
         args << file.absoluteFilePath();
 
         process.start(sevenZip,args);
-//        archives.removeFirst();
+
+        timer.start(10);
     }
 
-//    foreach(QFileInfo file, archives) {
-////        ui->pteOutput->appendPlainText(file.absoluteFilePath());
+}
+
+//void MainWindow::statusChanged(QProcess::ProcessState state)
+//{
+//    if(state == QProcess::NotRunning && !archives.isEmpty()){
+//        QFileInfo file = archives.takeFirst();
 //        QStringList args;
 //        args << "x";
 //        args << "-y";
@@ -63,25 +69,27 @@ void MainWindow::on_pbStart_clicked()
 //        args << file.absoluteFilePath();
 
 //        process.start(sevenZip,args);
-//        process.waitForFinished();
 
+////        archives.removeFirst();
 //    }
-}
+//}
 
-void MainWindow::statusChanged(QProcess::ProcessState state)
-{
-    if(state == QProcess::NotRunning && !archives.isEmpty()){
-        QFileInfo file = archives.takeFirst();
-        QStringList args;
-        args << "x";
-        args << "-y";
-        args << "-o" + file.absolutePath() + "/"+ file.baseName();
-        args << file.absoluteFilePath();
+void MainWindow::onTimer(){
+//    qDebug("hello");
+        if(process.state() == QProcess::NotRunning && !archives.isEmpty()){
+            QFileInfo file = archives.takeFirst();
+            QStringList args;
+            args << "x";
+            args << "-y";
+            args << "-o" + file.absolutePath() + "/"+ file.baseName();
+            args << file.absoluteFilePath();
 
-        process.start(sevenZip,args);
+            process.start(sevenZip,args);
 
-//        archives.removeFirst();
-    }
+        }
+
+        if(archives.isEmpty())
+            timer.stop();
 }
 
 void MainWindow::readyToRead()
